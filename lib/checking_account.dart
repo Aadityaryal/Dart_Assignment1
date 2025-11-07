@@ -1,5 +1,5 @@
 import 'bank_account.dart';
-import 'exceptions.dart';
+
 
 class CheckingAccount extends BankAccount {
   static const double overdraftFee = 35.0;
@@ -9,23 +9,23 @@ class CheckingAccount extends BankAccount {
 
   @override
   void withdraw(double amount) {
-    _validateAmount(amount);
-    if (_balance - amount < 0) {
-      _balance -= (amount + overdraftFee);
-      _log('WITHDRAW (OVERDRAFT)', amount + overdraftFee);
-      print('⚠️ Overdraft! Fee: \$$overdraftFee');
+    validateAmount(amount);
+    if (balance - amount < 0) {
+      balance = balance - (amount + overdraftFee);
+      log('WITHDRAW (OVERDRAFT)', amount + overdraftFee);
+      print('Warning: Overdraft! Fee: \$$overdraftFee');
     } else {
-      _balance -= amount;
-      _log('WITHDRAW', amount);
+      balance = balance - amount;
+      log('WITHDRAW', amount);
     }
-    print('✅ Withdrew \$${amount.toStringAsFixed(2)}');
+    print('Success: Withdrew \$${amount.toStringAsFixed(2)}');
   }
 
   @override
   void deposit(double amount) {
-    _validateAmount(amount);
-    _balance += amount;
-    _log('DEPOSIT', amount);
-    print('✅ Deposited \$${amount.toStringAsFixed(2)}');
+    validateAmount(amount);
+    balance = balance + amount;
+    log('DEPOSIT', amount);
+    print('Success: Deposited \$${amount.toStringAsFixed(2)}');
   }
 }

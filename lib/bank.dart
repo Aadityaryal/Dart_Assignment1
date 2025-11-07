@@ -34,28 +34,27 @@ class Bank {
     }
 
     _accounts.add(account);
-    print('🎉 Created $type → $accNumber');
+    print('Success: Created $type → $accNumber');
   }
 
-  BankAccount _findAccount(String accNumber) {
+  BankAccount findAccount(String accNumber) {
     return _accounts.firstWhere((a) => a.accountNumber == accNumber,
         orElse: () => throw AccountNotFoundException('Account $accNumber not found'));
   }
 
   void transfer(String fromAcc, String toAcc, double amount) {
-    final from = _findAccount(fromAcc);
-    final to = _findAccount(toAcc);
+    final from = findAccount(fromAcc);
+    final to = findAccount(toAcc);
     from.withdraw(amount);
     to.deposit(amount);
-    print('💸 Transferred \$${amount.toStringAsFixed(2)}: $fromAcc → $toAcc');
+    print('Success: Transferred \$${amount.toStringAsFixed(2)}: $fromAcc → $toAcc');
   }
 
-  // FIXED METHOD: Cast to InterestBearing
   void applyMonthlyInterest() {
     print('Applying monthly interest...');
     for (var acc in _accounts) {
       if (acc is InterestBearing) {
-        final interest = (acc as InterestBearing).calculateInterest(); // ← FIXED!
+        final interest = (acc as InterestBearing).calculateInterest();
         acc.deposit(interest);
         print('   Interest \$${interest.toStringAsFixed(2)} → ${acc.accountNumber}');
       }
@@ -63,18 +62,20 @@ class Bank {
   }
 
   void generateReport() {
-    print('\n' + '=' * 50);
+    print('=' * 50);
     print('           BANK REPORT');
     print('=' * 50);
     if (_accounts.isEmpty) {
       print('No accounts.\n');
       return;
     }
-    for (var acc in _accounts) acc.displayInfo();
-    print('=' * 50 + '\n');
+    for (var acc in _accounts) {
+      acc.displayInfo();
+    }
+    print('${'=' * 50}\n');
   }
 
   void showTransactionHistory(String accNumber) {
-    _findAccount(accNumber).displayTransactionHistory();
+    findAccount(accNumber).displayTransactionHistory();
   }
 }

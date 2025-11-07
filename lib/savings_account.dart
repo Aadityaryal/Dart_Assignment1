@@ -9,33 +9,36 @@ class SavingsAccount extends BankAccount implements InterestBearing {
 
   SavingsAccount(String accountNumber, String holder, double initialBalance)
       : super(accountNumber, holder, initialBalance) {
-    if (initialBalance < minBalance)
+    if (initialBalance < minBalance) {
       throw MinimumBalanceViolationException('Initial balance ≥ \$500 required');
+    }
   }
 
   @override
   void withdraw(double amount) {
-    _validateAmount(amount);
-    if (_withdrawalsThisMonth >= maxWithdrawalsPerMonth)
+    validateAmount(amount);
+    if (_withdrawalsThisMonth >= maxWithdrawalsPerMonth) {
       throw WithdrawalLimitExceededException('Max 3 withdrawals/month');
-    if (_balance - amount < minBalance)
+    }
+    if (balance - amount < minBalance) {
       throw InsufficientBalanceException('Below min balance \$500');
-    _balance -= amount;
+    }
+    balance -= amount;
     _withdrawalsThisMonth++;
-    _log('WITHDRAW', amount);
-    print('✅ Withdrew \$${amount.toStringAsFixed(2)}');
+    log('WITHDRAW', amount);
+    print('Success: Withdrew \$${amount.toStringAsFixed(2)}');
   }
 
   @override
   void deposit(double amount) {
-    _validateAmount(amount);
-    _balance += amount;
-    _log('DEPOSIT', amount);
-    print('✅ Deposited \$${amount.toStringAsFixed(2)}');
+    validateAmount(amount);
+    balance += amount;
+    log('DEPOSIT', amount);
+    print('Success: Deposited \$${amount.toStringAsFixed(2)}');
   }
 
   @override
-  double calculateInterest() => _balance * 0.02;
+  double calculateInterest() => balance * 0.02;
 
   void resetMonthlyWithdrawals() => _withdrawalsThisMonth = 0;
 }

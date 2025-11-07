@@ -7,28 +7,30 @@ class PremiumAccount extends BankAccount implements InterestBearing {
 
   PremiumAccount(String accountNumber, String holder, double initialBalance)
       : super(accountNumber, holder, initialBalance) {
-    if (initialBalance < minBalance)
+    if (initialBalance < minBalance) {
       throw MinimumBalanceViolationException('Premium needs ≥ \$10,000');
+    }
   }
 
   @override
   void withdraw(double amount) {
-    _validateAmount(amount);
-    if (_balance - amount < minBalance)
+    validateAmount(amount);
+    if (balance - amount < minBalance) {
       throw InsufficientBalanceException('Below min \$10,000');
-    _balance -= amount;
-    _log('WITHDRAW', amount);
-    print('✅ Withdrew \$${amount.toStringAsFixed(2)}');
+    }
+    balance = balance - amount;
+    log('WITHDRAW', amount);
+    print('Success: Withdrew \$${amount.toStringAsFixed(2)}');
   }
 
   @override
   void deposit(double amount) {
-    _validateAmount(amount);
-    _balance += amount;
-    _log('DEPOSIT', amount);
-    print('✅ Deposited \$${amount.toStringAsFixed(2)}');
+    validateAmount(amount);
+    balance = balance + amount;
+    log('DEPOSIT', amount);
+    print('Success: Deposited \$${amount.toStringAsFixed(2)}');
   }
 
   @override
-  double calculateInterest() => _balance * 0.05;
+  double calculateInterest() => balance * 0.05;
 }

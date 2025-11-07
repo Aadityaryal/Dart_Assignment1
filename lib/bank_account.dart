@@ -9,21 +9,38 @@ abstract class BankAccount {
 
   BankAccount(this._accountNumber, this._accountHolderName, this._balance);
 
+  // GETTERS
   String get accountNumber => _accountNumber;
   String get accountHolderName => _accountHolderName;
   double get balance => _balance;
   int get transactionCount => _transactionCount;
   List<String> get transactionHistory => List.unmodifiable(_transactionHistory);
 
+  // SETTER for balance (used by subclasses)
+  set balance(double value) {
+    if (value < 0) {
+      throw InsufficientBalanceException('Balance cannot be negative');
+    }
+    _balance = value;
+  }
   set accountHolderName(String name) {
     if (name.trim().isEmpty) throw ArgumentError('Name cannot be empty');
     _accountHolderName = name.trim();
   }
 
-  void _validateAmount(double amount) {
+  // PUBLIC: validate amount
+  void validateAmount(double amount) {
     if (amount <= 0) throw InvalidAmountException('Amount must be positive');
   }
 
+  // PUBLIC: log transaction
+  void log(String action, double amount) {
+    _transactionHistory.add(
+        '$action \$${amount.toStringAsFixed(2)} @ ${DateTime.now().toIso8601String().substring(0, 19)}');
+    _transactionCount++;
+  }
+
+  // ABSTRACT
   void withdraw(double amount);
   void deposit(double amount);
 
@@ -46,10 +63,5 @@ abstract class BankAccount {
       }
     }
     print('');
-  }
-
-  void _log(String action, double amount) {
-    _transactionHistory.add('$action \$${amount.toStringAsFixed(2)} @ ${DateTime.now().toIso8601String().substring(0, 19)}');
-    _transactionCount++;
   }
 }
